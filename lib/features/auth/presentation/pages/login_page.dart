@@ -38,7 +38,11 @@ class _LoginOtpPageState extends State<LoginOtpPage> {
     });
   }
 
-  bool get isPhoneValid => phoneController.text.length == 10;
+  bool isPhoneValid(String phone) {
+    if (phone.length != 10) return false;
+    final firstDigit = int.tryParse(phone[0]) ?? 0;
+    return firstDigit >= 6 && firstDigit <= 9;
+  }
 
   bool get isOtpValid =>
       otpControllers.every((controller) => controller.text.isNotEmpty);
@@ -122,14 +126,17 @@ class _LoginOtpPageState extends State<LoginOtpPage> {
                                   context.read<OtpBloc>().add(VerifyOtp(otp));
                                 }
                               : null)
-                        : (isPhoneValid
+                        : (isPhoneValid(phoneController.text)
                               ? () {
                                   setState(() => isOtpScreen = true);
                                   startResendTimer();
                                 }
                               : null),
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: (isOtpScreen ? isOtpValid : isPhoneValid)
+                      backgroundColor:
+                          (isOtpScreen
+                              ? isOtpValid
+                              : isPhoneValid(phoneController.text))
                           ? Colors.orange
                           : Colors.grey.shade300,
                       foregroundColor: Colors.white,
@@ -257,6 +264,7 @@ class _LoginOtpPageState extends State<LoginOtpPage> {
               height: 55,
               child: TextField(
                 controller: otpControllers[index],
+                autofocus: index == 0,
                 textAlign: TextAlign.center,
                 keyboardType: TextInputType.number,
                 maxLength: 1,
