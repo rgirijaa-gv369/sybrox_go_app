@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:sybrox_go_app/features/auth/presentation/pages/login_page.dart';
 
 class Registration extends StatelessWidget {
   const Registration({Key? key}) : super(key: key);
