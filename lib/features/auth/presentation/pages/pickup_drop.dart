@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class PickupDropPage extends StatefulWidget {
   const PickupDropPage({super.key});
@@ -9,12 +10,20 @@ class PickupDropPage extends StatefulWidget {
 
 class _PickupDropPageState extends State<PickupDropPage> {
   TextEditingController pickupController = TextEditingController();
+  String selectedValue = "For me";
 
   @override
   void initState() {
     super.initState();
     pickupController = TextEditingController();
   }
+
+  @override
+  void dispose() {
+    pickupController.dispose();
+    super.dispose();
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +48,8 @@ class _PickupDropPageState extends State<PickupDropPage> {
 
   Widget _appBar(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      height: 72,
+      padding: const EdgeInsets.symmetric(horizontal: 12),
       decoration: BoxDecoration(
         color: Colors.white,
         boxShadow: [
@@ -53,18 +63,30 @@ class _PickupDropPageState extends State<PickupDropPage> {
       ),
       child: Row(
         children: [
-          CircleAvatar(
-            backgroundColor: Colors.white,
-            radius: 20,
-            child: IconButton(
-              icon: const Icon(Icons.arrow_back_ios_new, size: 18),
-              onPressed: () => Navigator.pop(context),
+          GestureDetector(
+            onTap: () => Navigator.pop(context),
+            child: Container(
+              width: 40,
+              height: 40,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                shape: BoxShape.circle,
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.1),
+                    blurRadius: 6,
+                  ),
+                ],
+              ),
+              child: const Icon(Icons.arrow_back_ios_new, size: 18),
             ),
           ),
-          const Spacer(),
-          const Text(
-            "Pickup",
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+          const SizedBox(width: 100),
+          Center(
+            child: const Text(
+              "Pickup",
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.w900),
+            ),
           ),
           const Spacer(),
         ],
@@ -110,21 +132,32 @@ class _PickupDropPageState extends State<PickupDropPage> {
 
   Widget _forMeDropdown() {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12),
-      height: 36,
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+      height: 32,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(20),
         border: Border.all(color: Colors.grey.shade300),
       ),
       child: DropdownButtonHideUnderline(
         child: DropdownButton<String>(
-          value: "For me",
+          value: selectedValue,
+          icon: const Icon(Icons.keyboard_arrow_down, size: 18),
+          elevation: 0,
+          style: const TextStyle(
+            fontSize: 14,
+            color: Colors.black,
+            fontWeight: FontWeight.w500,
+          ),
           items: const [
             DropdownMenuItem(value: "For me", child: Text("For me")),
-            DropdownMenuItem(value: "For someone", child: Text("For someone")),
+            DropdownMenuItem(
+              value: "For someone else",
+              child: Text("For someone else"),
+            ),
           ],
-          onChanged: (value) {},
-          icon: const Icon(Icons.keyboard_arrow_down),
+          onChanged: (value) {
+            setState(() => selectedValue = value!);
+          },
         ),
       ),
     );
@@ -157,11 +190,12 @@ class _PickupDropPageState extends State<PickupDropPage> {
       height: 46,
       padding: const EdgeInsets.symmetric(horizontal: 14),
       decoration: BoxDecoration(
-        color: filled ? const Color(0xFFF4F1F1) : Colors.white,
+        color:  Colors.white,
         borderRadius: BorderRadius.circular(25),
         border: Border.all(color: Colors.grey.shade300),
       ),
       child: TextField(
+        controller: pickupController,
         decoration: InputDecoration(
           hintText: hint,
           hintStyle: const TextStyle(color: Colors.grey),
@@ -171,28 +205,19 @@ class _PickupDropPageState extends State<PickupDropPage> {
       ),
     );
   }
+}
 
-  Widget _locationIndicators() {
-    return Column(
-      children: [
-        _circleIcon(Icons.location_on, Colors.green),
-        Container(
-          height: 36,
-          width: 2,
-          decoration: const BoxDecoration(
-            border: Border(
-              left: BorderSide(
-                color: Colors.black54,
-                width: 1,
-                style: BorderStyle.solid,
-              ),
-            ),
-          ),
-        ),
-        _circleIcon(Icons.location_on, Colors.red),
-      ],
-    );
-  }
+Widget _locationIndicators() {
+  return Column(
+    children: [
+      _circleIcon(Icons.location_on, Colors.green),
+      Container( height: 36, width: 2,
+        decoration: const BoxDecoration(
+          border: Border( left: BorderSide(
+            color: Colors.black54, width: 1,
+            style: BorderStyle.solid,
+          ), ), ), ),
+      _circleIcon(Icons.location_on, Colors.red), ], ); }
 
   Widget _circleIcon(IconData icon, Color color) {
     return Container(
@@ -277,4 +302,4 @@ class _PickupDropPageState extends State<PickupDropPage> {
       ),
     );
   }
-}
+
