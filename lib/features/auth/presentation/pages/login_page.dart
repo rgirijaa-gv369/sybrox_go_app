@@ -1,11 +1,11 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:pinput/pinput.dart';
 import 'package:sybrox_go_app/features/auth/presentation/bloc/otp_bloc.dart';
 import 'package:sybrox_go_app/features/auth/presentation/bloc/otp_event.dart';
 import 'package:sybrox_go_app/features/auth/presentation/bloc/otp_state.dart';
 import 'package:sybrox_go_app/features/auth/presentation/pages/pickup_drop.dart';
-import 'package:sybrox_go_app/features/auth/presentation/pages/registration_page.dart';
 
 class LoginOtpPage extends StatefulWidget {
   const LoginOtpPage({super.key});
@@ -18,6 +18,8 @@ class _LoginOtpPageState extends State<LoginOtpPage> {
   bool isOtpScreen = false;
 
   final TextEditingController phoneController = TextEditingController();
+
+  String enteredOtp = '';
 
   final List<TextEditingController> otpControllers = List.generate(
     4,
@@ -45,8 +47,7 @@ class _LoginOtpPageState extends State<LoginOtpPage> {
     return firstDigit >= 6 && firstDigit <= 9;
   }
 
-  bool get isOtpValid =>
-      otpControllers.every((controller) => controller.text.isNotEmpty);
+  bool get isOtpValid => enteredOtp.length == 4;
 
   @override
   void dispose() {
@@ -121,10 +122,9 @@ class _LoginOtpPageState extends State<LoginOtpPage> {
                     onPressed: isOtpScreen
                         ? (isOtpValid
                               ? () {
-                                  final otp = otpControllers
-                                      .map((e) => e.text)
-                                      .join();
-                                  context.read<OtpBloc>().add(VerifyOtp(otp));
+                                  context.read<OtpBloc>().add(
+                                    VerifyOtp(enteredOtp.trim()),
+                                  );
                                 }
                               : null)
                         : (isPhoneValid(phoneController.text)
@@ -235,6 +235,16 @@ class _LoginOtpPageState extends State<LoginOtpPage> {
   }
 
   Widget _otpView() {
+    final defaultPinTheme = PinTheme(
+      width: 50,
+      height: 50,
+      textStyle: const TextStyle(fontSize: 22, color: Colors.black),
+      decoration: BoxDecoration(
+        color: Colors.grey.shade100,
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: Colors.transparent),
+      ),
+    );
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -256,31 +266,29 @@ class _LoginOtpPageState extends State<LoginOtpPage> {
 
         const SizedBox(height: 30),
 
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: List.generate(
-            4,
-            (index) => SizedBox(
-              width: 55,
-              height: 55,
-              child: TextField(
-                controller: otpControllers[index],
-                autofocus: index == 0,
-                textAlign: TextAlign.center,
-                keyboardType: TextInputType.number,
-                maxLength: 1,
-                decoration: InputDecoration(
-                  counterText: "",
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                ),
-                onChanged: (_) => setState(() {}),
-              ),
+        Pinput(
+          length: 4,
+          keyboardType: TextInputType.number,
+
+          defaultPinTheme: defaultPinTheme,
+          focusedPinTheme: defaultPinTheme.copyWith(
+            decoration: defaultPinTheme.decoration!.copyWith(
+              border: Border.all(color: Colors.indigo),
             ),
           ),
+          submittedPinTheme: defaultPinTheme.copyWith(
+            decoration: BoxDecoration(
+              color: Colors.grey.shade300,
+              borderRadius: BorderRadius.circular(12),
+            ),
+          ),
+          onChanged: (value) {
+            setState(() => enteredOtp = value);
+          },
+          onCompleted: (value) {
+            setState(() => enteredOtp = value);
+          },
         ),
-
         const SizedBox(height: 20),
 
         GestureDetector(

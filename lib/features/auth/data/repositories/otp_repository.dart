@@ -7,6 +7,6 @@ class OtpRepository {
 
   Future<bool> verifyOtp(String otp) async {
     await Future.delayed(const Duration(seconds: 2));
-    return otp == "1234";
+    return otp.trim() == "1234";
   }
 }
