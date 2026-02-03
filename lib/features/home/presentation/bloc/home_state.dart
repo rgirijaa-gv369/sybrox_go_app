@@ -1,31 +1,38 @@
 import 'package:equatable/equatable.dart';
-import '../../domain/entities/message.dart';
+import '../../data/models/message_model.dart';
 
-abstract class HomeState extends Equatable {
-  const HomeState();
-  
-  @override
-  List<Object> get props => [];
-}
+class RideState extends Equatable {
+  final List<Ride> rides;
+  final int completedOrders;
+  final bool isLoading;
+  final bool showCouponProgress;
 
-class HomeInitial extends HomeState {}
-
-class HomeLoading extends HomeState {}
-
-class HomeLoaded extends HomeState {
-  final Message message;
-
-  const HomeLoaded({required this.message});
+  const RideState({
+    this.rides = const [],
+    this.completedOrders = 1, // Start with 1 as shown in screenshot
+    this.isLoading = false,
+    this.showCouponProgress = true, // Always show coupon section
+  });
 
   @override
-  List<Object> get props => [message];
-}
+  List<Object> get props => [
+    rides,
+    completedOrders,
+    isLoading,
+    showCouponProgress,
+  ];
 
-class HomeError extends HomeState {
-  final String message;
-
-  const HomeError({required this.message});
-
-  @override
-  List<Object> get props => [message];
+  RideState copyWith({
+    List<Ride>? rides,
+    int? completedOrders,
+    bool? isLoading,
+    bool? showCouponProgress,
+  }) {
+    return RideState(
+      rides: rides ?? this.rides,
+      completedOrders: completedOrders ?? this.completedOrders,
+      isLoading: isLoading ?? this.isLoading,
+      showCouponProgress: showCouponProgress ?? this.showCouponProgress,
+    );
+  }
 }

@@ -32,297 +32,305 @@ class _RegistrationView extends StatelessWidget {
       },
       child: Scaffold(
         body: SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.all(24.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const SizedBox(height: 10),
-                // Header with Help Button
-                Stack(
-                  alignment: Alignment.centerLeft,
-                  children: [
-                    Container(
-                      alignment: Alignment.centerRight,
-                      child: _HelpButton(
-                        onTap: () {
-                          // Placeholder action
-                          showModalBottomSheet(
-                            context: context,
-                            builder: (_) =>
-                                const Center(child: Text("Help Content")),
+          child: CustomScrollView(
+            slivers: [
+              SliverFillRemaining(
+                hasScrollBody: false,
+                child: Padding(
+                  padding: const EdgeInsets.all(24.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const SizedBox(height: 10),
+                      // Header with Help Button
+                      Stack(
+                        alignment: Alignment.centerLeft,
+                        children: [
+                          Container(
+                            alignment: Alignment.centerRight,
+                            child: _HelpButton(
+                              onTap: () {
+                                // Placeholder action
+                                showModalBottomSheet(
+                                  context: context,
+                                  builder: (_) =>
+                                      const Center(child: Text("Help Content")),
+                                );
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 20),
+                      const Text(
+                        'Registration',
+                        style: TextStyle(
+                          fontSize: 28,
+                          fontWeight: FontWeight.bold,
+                          color: Color(0xFF1E3A8A), // Deep Blue color
+                        ),
+                      ),
+                      const SizedBox(height: 30),
+                      const Text(
+                        'Your name',
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                      const SizedBox(height: 8),
+                      BlocBuilder<RegistrationBloc, RegistrationState>(
+                        buildWhen: (previous, current) =>
+                            previous.name != current.name,
+                        builder: (context, state) {
+                          return TextField(
+                            decoration: InputDecoration(
+                              hintText: 'Sri Karan',
+                              prefixIcon: const Icon(Icons.person_outline),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                                borderSide: BorderSide.none,
+                              ),
+                              filled: true,
+                              fillColor: Colors.grey[200],
+                              contentPadding: const EdgeInsets.symmetric(
+                                horizontal: 16,
+                                vertical: 14,
+                              ),
+                            ),
+                            onChanged: (value) => context
+                                .read<RegistrationBloc>()
+                                .add(NameChanged(value)),
                           );
                         },
                       ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 20),
-                const Text(
-                  'Registration',
-                  style: TextStyle(
-                    fontSize: 28,
-                    fontWeight: FontWeight.bold,
-                    color: Color(0xFF1E3A8A), // Deep Blue color
-                  ),
-                ),
-                const SizedBox(height: 30),
-                const Text(
-                  'Your name',
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                ),
-                const SizedBox(height: 8),
-                BlocBuilder<RegistrationBloc, RegistrationState>(
-                  buildWhen: (previous, current) =>
-                      previous.name != current.name,
-                  builder: (context, state) {
-                    return TextField(
-                      decoration: InputDecoration(
-                        hintText: 'Sri Karan',
-                        prefixIcon: const Icon(Icons.person_outline),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12),
-                          borderSide: BorderSide.none,
-                        ),
-                        filled: true,
-                        fillColor: Colors.grey[200],
-                        contentPadding: const EdgeInsets.symmetric(
-                          horizontal: 16,
-                          vertical: 14,
-                        ),
+                      const SizedBox(height: 24),
+                      const Text(
+                        'Gender',
+                        style: TextStyle(fontWeight: FontWeight.bold),
                       ),
-                      onChanged: (value) => context
-                          .read<RegistrationBloc>()
-                          .add(NameChanged(value)),
-                    );
-                  },
-                ),
-                const SizedBox(height: 24),
-                const Text(
-                  'Gender',
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                ),
-                const SizedBox(height: 8),
-                BlocBuilder<RegistrationBloc, RegistrationState>(
-                  buildWhen: (previous, current) =>
-                      previous.gender != current.gender,
-                  builder: (context, state) {
-                    return Row(
-                      children: [
-                        _GenderChip(
-                          label: 'Male',
-                          isSelected: state.gender == 'Male',
-                          onTap: () => context.read<RegistrationBloc>().add(
-                            const GenderChanged('Male'),
-                          ),
-                        ),
-                        const SizedBox(width: 12),
-                        _GenderChip(
-                          label: 'Female',
-                          isSelected: state.gender == 'Female',
-                          onTap: () => context.read<RegistrationBloc>().add(
-                            const GenderChanged('Female'),
-                          ),
-                        ),
-                        const SizedBox(width: 12),
-                        _GenderChip(
-                          label: 'other',
-                          isSelected: state.gender == 'other',
-                          onTap: () => context.read<RegistrationBloc>().add(
-                            const GenderChanged('other'),
-                          ),
-                        ),
-                      ],
-                    );
-                  },
-                ),
-                const SizedBox(height: 30),
-                BlocBuilder<RegistrationBloc, RegistrationState>(
-                  buildWhen: (previous, current) =>
-                      previous.receiveWhatsAppUpdates !=
-                      current.receiveWhatsAppUpdates,
-                  builder: (context, state) {
-                    return Row(
-                      children: [
-                        // Placeholder for WhatsApp icon
-                        Image.asset(
-                          'assets/images/whatsup.png',
-                          width: 24,
-                          height: 24,
-                          fit: BoxFit.contain,
-                        ),
-                        const SizedBox(width: 8),
-                        const Expanded(
-                          child: Text('Receive updates in whatsapp'),
-                        ),
-                        Checkbox(
-                          value: state.receiveWhatsAppUpdates,
-                          onChanged: (value) => context
-                              .read<RegistrationBloc>()
-                              .add(ToggleWhatsAppUpdates(value ?? false)),
-                          activeColor: Colors.green,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(4),
-                          ),
-                        ),
-                      ],
-                    );
-                  },
-                ),
-                const SizedBox(height: 12),
-                BlocBuilder<RegistrationBloc, RegistrationState>(
-                  buildWhen: (previous, current) =>
-                      previous.isReferralInputVisible !=
-                      current.isReferralInputVisible,
-                  builder: (context, state) {
-                    return Row(
-                      children: [
-                        Image.asset(
-                          'assets/images/gift.png',
-                          width: 24,
-                          height: 24,
-                          fit: BoxFit.contain,
-                        ), // Placeholder for Gift icon
-                        const SizedBox(width: 8),
-                        const Expanded(child: Text('Having a referral code')),
-                        Checkbox(
-                          value: state.isReferralInputVisible,
-                          onChanged: (value) => context
-                              .read<RegistrationBloc>()
-                              .add(ToggleReferralVisibility(value ?? false)),
-                          activeColor: Colors.green, // Green to match image
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(4),
-                          ), // Square checkbox
-                        ),
-                      ],
-                    );
-                  },
-                ),
-                const SizedBox(height: 12),
-                BlocBuilder<RegistrationBloc, RegistrationState>(
-                  // Rebuild if visibility, code, or verified status changes
-                  buildWhen: (previous, current) =>
-                      previous.isReferralInputVisible !=
-                          current.isReferralInputVisible ||
-                      previous.referralCode != current.referralCode ||
-                      previous.isReferralVerified != current.isReferralVerified,
-                  builder: (context, state) {
-                    if (!state.isReferralInputVisible)
-                      return const SizedBox.shrink();
-
-                    return Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const Text(
-                          'Enter Referral code',
-                          style: TextStyle(fontWeight: FontWeight.w500),
-                        ),
-                        const SizedBox(height: 8),
-                        Stack(
-                          alignment: Alignment.center,
-                          children: [
-                            Row(
-                              children: [
-                                Expanded(
-                                  child: TextField(
-                                    decoration: InputDecoration(
-                                      hintText: 'JC543KA',
-                                      border: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(12),
-                                        borderSide: BorderSide.none,
-                                      ),
-                                      filled: true,
-                                      fillColor: Colors.grey[200],
-                                      contentPadding:
-                                          const EdgeInsets.symmetric(
-                                            horizontal: 16,
-                                            vertical: 14,
-                                          ),
-                                    ),
-                                    inputFormatters: [
-                                      FilteringTextInputFormatter.allow(
-                                        RegExp(r'[a-zA-Z0-9]'),
-                                      ), // Allow alphanumeric
-                                      UpperCaseTextFormatter(), // Auto-convert to uppercase
-                                      LengthLimitingTextInputFormatter(
-                                        7,
-                                      ), // Hard limit 7
-                                    ],
-                                    onChanged: (value) => context
-                                        .read<RegistrationBloc>()
-                                        .add(ReferralCodeChanged(value)),
-                                  ),
-                                ),
-                                const SizedBox(width: 12),
-                                TextButton(
-                                  // Logic moved to BLoC getter isVerifyButtonEnabled
-                                  onPressed: state.isVerifyButtonEnabled
-                                      ? () => context
-                                            .read<RegistrationBloc>()
-                                            .add(VerifyReferralCode())
-                                      : null,
-                                  child: Text(
-                                    state.isReferralVerified
-                                        ? 'Verified'
-                                        : 'Verify',
-                                    style: TextStyle(
-                                      color: state.isReferralVerified
-                                          ? Colors.green
-                                          : (state.isVerifyButtonEnabled
-                                                ? const Color(0xFF1E3A8A)
-                                                : Colors.grey),
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                            if (state.isReferralVerified) _VerifiedPopup(),
-                          ],
-                        ),
-                      ],
-                    );
-                  },
-                ),
-                const Spacer(flex: 3),
-                SizedBox(
-                  width: double.infinity,
-                  height: 50,
-                  child: BlocBuilder<RegistrationBloc, RegistrationState>(
-                    builder: (context, state) {
-                      return ElevatedButton(
-                        onPressed: state.isFormValid && !state.isSubmitting
-                            ? () => context.read<RegistrationBloc>().add(
-                                SubmitRegistration(),
-                              )
-                            : null,
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.orange,
-                          disabledBackgroundColor: Colors.grey[300],
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                        ),
-                        child: state.isSubmitting
-                            ? const CircularProgressIndicator(
-                                color: Colors.white,
-                              )
-                            : const Text(
-                                'Next',
-                                style: TextStyle(
-                                  fontSize: 18,
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
+                      const SizedBox(height: 8),
+                      BlocBuilder<RegistrationBloc, RegistrationState>(
+                        buildWhen: (previous, current) =>
+                            previous.gender != current.gender,
+                        builder: (context, state) {
+                          return Row(
+                            children: [
+                              _GenderChip(
+                                label: 'Male',
+                                isSelected: state.gender == 'Male',
+                                onTap: () => context.read<RegistrationBloc>().add(
+                                  const GenderChanged('Male'),
                                 ),
                               ),
-                      );
-                    },
+                              const SizedBox(width: 12),
+                              _GenderChip(
+                                label: 'Female',
+                                isSelected: state.gender == 'Female',
+                                onTap: () => context.read<RegistrationBloc>().add(
+                                  const GenderChanged('Female'),
+                                ),
+                              ),
+                              const SizedBox(width: 12),
+                              _GenderChip(
+                                label: 'other',
+                                isSelected: state.gender == 'other',
+                                onTap: () => context.read<RegistrationBloc>().add(
+                                  const GenderChanged('other'),
+                                ),
+                              ),
+                            ],
+                          );
+                        },
+                      ),
+                      const SizedBox(height: 30),
+                      BlocBuilder<RegistrationBloc, RegistrationState>(
+                        buildWhen: (previous, current) =>
+                            previous.receiveWhatsAppUpdates !=
+                            current.receiveWhatsAppUpdates,
+                        builder: (context, state) {
+                          return Row(
+                            children: [
+                              // Placeholder for WhatsApp icon
+                              Image.asset(
+                                'assets/images/whatsup.png',
+                                width: 24,
+                                height: 24,
+                                fit: BoxFit.contain,
+                              ),
+                              const SizedBox(width: 8),
+                              const Expanded(
+                                child: Text('Receive updates in whatsapp'),
+                              ),
+                              Checkbox(
+                                value: state.receiveWhatsAppUpdates,
+                                onChanged: (value) => context
+                                    .read<RegistrationBloc>()
+                                    .add(ToggleWhatsAppUpdates(value ?? false)),
+                                activeColor: Colors.green,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(4),
+                                ),
+                              ),
+                            ],
+                          );
+                        },
+                      ),
+                      const SizedBox(height: 12),
+                      BlocBuilder<RegistrationBloc, RegistrationState>(
+                        buildWhen: (previous, current) =>
+                            previous.isReferralInputVisible !=
+                            current.isReferralInputVisible,
+                        builder: (context, state) {
+                          return Row(
+                            children: [
+                              Image.asset(
+                                'assets/images/gift.png',
+                                width: 24,
+                                height: 24,
+                                fit: BoxFit.contain,
+                              ), // Placeholder for Gift icon
+                              const SizedBox(width: 8),
+                              const Expanded(child: Text('Having a referral code')),
+                              Checkbox(
+                                value: state.isReferralInputVisible,
+                                onChanged: (value) => context
+                                    .read<RegistrationBloc>()
+                                    .add(ToggleReferralVisibility(value ?? false)),
+                                activeColor: Colors.green, // Green to match image
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(4),
+                                ), // Square checkbox
+                              ),
+                            ],
+                          );
+                        },
+                      ),
+                      const SizedBox(height: 12),
+                      BlocBuilder<RegistrationBloc, RegistrationState>(
+                        // Rebuild if visibility, code, or verified status changes
+                        buildWhen: (previous, current) =>
+                            previous.isReferralInputVisible !=
+                                current.isReferralInputVisible ||
+                            previous.referralCode != current.referralCode ||
+                            previous.isReferralVerified != current.isReferralVerified,
+                        builder: (context, state) {
+                          if (!state.isReferralInputVisible)
+                            return const SizedBox.shrink();
+
+                          return Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Text(
+                                'Enter Referral code',
+                                style: TextStyle(fontWeight: FontWeight.w500),
+                              ),
+                              const SizedBox(height: 8),
+                              Stack(
+                                alignment: Alignment.center,
+                                children: [
+                                  Row(
+                                    children: [
+                                      Expanded(
+                                        child: TextField(
+                                          decoration: InputDecoration(
+                                            hintText: 'JC543KA',
+                                            border: OutlineInputBorder(
+                                              borderRadius: BorderRadius.circular(12),
+                                              borderSide: BorderSide.none,
+                                            ),
+                                            filled: true,
+                                            fillColor: Colors.grey[200],
+                                            contentPadding:
+                                                const EdgeInsets.symmetric(
+                                                  horizontal: 16,
+                                                  vertical: 14,
+                                                ),
+                                          ),
+                                          inputFormatters: [
+                                            FilteringTextInputFormatter.allow(
+                                              RegExp(r'[a-zA-Z0-9]'),
+                                            ), // Allow alphanumeric
+                                            UpperCaseTextFormatter(), // Auto-convert to uppercase
+                                            LengthLimitingTextInputFormatter(
+                                              7,
+                                            ), // Hard limit 7
+                                          ],
+                                          onChanged: (value) => context
+                                              .read<RegistrationBloc>()
+                                              .add(ReferralCodeChanged(value)),
+                                        ),
+                                      ),
+                                      const SizedBox(width: 12),
+                                      TextButton(
+                                        // Logic moved to BLoC getter isVerifyButtonEnabled
+                                        onPressed: state.isVerifyButtonEnabled
+                                            ? () => context
+                                                  .read<RegistrationBloc>()
+                                                  .add(VerifyReferralCode())
+                                            : null,
+                                        child: Text(
+                                          state.isReferralVerified
+                                              ? 'Verified'
+                                              : 'Verify',
+                                          style: TextStyle(
+                                            color: state.isReferralVerified
+                                                ? Colors.green
+                                                : (state.isVerifyButtonEnabled
+                                                      ? const Color(0xFF1E3A8A)
+                                                      : Colors.grey),
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  if (state.isReferralVerified) _VerifiedPopup(),
+                                ],
+                              ),
+                            ],
+                          );
+                        },
+                      ),
+                      const SizedBox(height: 32), // Safety padding
+                      const Spacer(flex: 3),
+                      SizedBox(
+                        width: double.infinity,
+                        height: 50,
+                        child: BlocBuilder<RegistrationBloc, RegistrationState>(
+                          builder: (context, state) {
+                            return ElevatedButton(
+                              onPressed: state.isFormValid && !state.isSubmitting
+                                  ? () => context.read<RegistrationBloc>().add(
+                                      SubmitRegistration(),
+                                    )
+                                  : null,
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.orange,
+                                disabledBackgroundColor: Colors.grey[300],
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                              ),
+                              child: state.isSubmitting
+                                  ? const CircularProgressIndicator(
+                                      color: Colors.white,
+                                    )
+                                  : const Text(
+                                      'Next',
+                                      style: TextStyle(
+                                        fontSize: 18,
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                            );
+                          },
+                        ),
+                      ),
+                      const SizedBox(height: 20),
+                    ],
                   ),
                 ),
-                const SizedBox(height: 20),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),

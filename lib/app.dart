@@ -3,8 +3,13 @@ import 'package:go_router/go_router.dart';
 
 import 'core/theme/app_theme.dart';
 import 'features/home/presentation/pages/home_page.dart';
+import 'features/home/presentation/bloc/home_bloc.dart';
 import 'features/auth/presentation/pages/registration_page.dart';
+import 'features/auth/presentation/pages/login_page.dart';
 import 'features/permission/presentation/pages/location_page.dart';
+import 'features/auth/presentation/bloc/otp_bloc.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'injection_container.dart' as di;
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -23,11 +28,21 @@ class MyApp extends StatelessWidget {
 }
 
 final GoRouter _router = GoRouter(
-  initialLocation: '/registration', // Start at Registration for this flow
+  initialLocation: '/login', // Start at Login for this flow
   routes: [
     GoRoute(
       path: '/',
-      builder: (context, state) => const HomePage(),
+      builder: (context, state) => BlocProvider(
+        create: (context) => RideBloc(),
+        child: const HomePage(),
+      ),
+    ),
+    GoRoute(
+      path: '/login',
+      builder: (context, state) => BlocProvider(
+        create: (context) => di.sl<OtpBloc>(),
+        child: const LoginOtpPage(),
+      ),
     ),
     GoRoute(
       path: '/registration',

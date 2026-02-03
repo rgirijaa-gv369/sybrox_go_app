@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:get_it/get_it.dart';
-import 'package:go_app/app.dart';
-import 'package:go_app/injection_container.dart' as di;
+import 'package:sybrox_go_app/app.dart';
+import 'package:sybrox_go_app/injection_container.dart' as di;
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:sybrox_go_app/features/home/presentation/bloc/home_bloc.dart';
+import 'package:sybrox_go_app/features/home/presentation/pages/home_page.dart';
 
 void main() {
   setUp(() async {
@@ -13,22 +16,21 @@ void main() {
     GetIt.instance.reset();
   });
 
-  testWidgets('Home Page shows loading then welcome message', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(const MyApp());
-    await tester.pump(); // Allow BLoC to process event and emit Loading
+  testWidgets('Home Page renders seamless ride card', (
+    WidgetTester tester,
+  ) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        home: BlocProvider(
+          create: (_) => di.sl<RideBloc>(),
+          child: const HomePage(),
+        ),
+      ),
+    );
 
-    // Verify loading indicator is shown initially
-    expect(find.byType(CircularProgressIndicator), findsOneWidget);
-
-    // Wait for the delay in the DataSource (2 seconds)
-    await tester.pump(const Duration(seconds: 2));
-
-    // Wait for animations/microtasks
     await tester.pumpAndSettle();
 
-    // Verify that the welcome message is displayed
-    expect(find.text('Welcome to Clean Architecture with BLoC!'), findsOneWidget);
-    expect(find.byIcon(Icons.check_circle_outline), findsOneWidget);
+    expect(find.text('Ride with GO'), findsOneWidget);
+    expect(find.text('Your Ride'), findsOneWidget);
   });
 }

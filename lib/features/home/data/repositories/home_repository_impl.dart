@@ -5,18 +5,18 @@ import '../../domain/entities/message.dart';
 import '../../domain/repositories/home_repository.dart';
 import '../datasources/home_local_data_source.dart';
 
-class HomeRepositoryImpl implements HomeRepository {
-  final HomeLocalDataSource localDataSource;
+// class HomeRepositoryImpl implements HomeRepository {
+//   final HomeLocalDataSource localDataSource;
 
-  HomeRepositoryImpl({required this.localDataSource});
+//   HomeRepositoryImpl({required this.localDataSource});
 
-  @override
-  Future<Either<Failure, Message>> getWelcomeMessage() async {
-    try {
-      final localMessage = await localDataSource.getLastMessage();
-      return Right(localMessage);
-    } catch (e) {
-      return const Left(CacheFailure());
-    }
-  }
-}
+//   @override
+//   Future<Either<Failure, Message>> getWelcomeMessage() async {
+//     try {
+//       final localMessage = await localDataSource.getLastMessage();
+//       return Right(localMessage);
+//     } catch (e) {
+//       return const Left(CacheFailure());
+//     }
+//   }
+// }

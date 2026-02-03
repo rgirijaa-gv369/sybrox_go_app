@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:permission_handler/permission_handler.dart';
+import 'package:go_router/go_router.dart';
 import '../bloc/location_bloc.dart';
 import '../bloc/location_event.dart';
 import '../bloc/location_state.dart';
@@ -26,18 +27,22 @@ class _LocationView extends StatelessWidget {
     return BlocListener<LocationBloc, LocationState>(
       listener: (context, state) {
         if (state is LocationPermissionGranted) {
-           // Navigate to next screen or show success
-           ScaffoldMessenger.of(context).showSnackBar(
-             const SnackBar(content: Text('Permission Granted! Navigating...')),
-           );
-           // context.go('/home'); // Example navigation
+          // Navigate to next screen or show success
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Permission Granted! Navigating...')),
+          );
+          context.go('/');
         } else if (state is LocationPermissionDenied) {
           if (state.isPermanent) {
-             openAppSettings();
+            openAppSettings();
           } else {
-             ScaffoldMessenger.of(context).showSnackBar(
-               const SnackBar(content: Text('Permission Denied. Please allow location access.')),
-             );
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text(
+                  'Permission Denied. Please allow location access.',
+                ),
+              ),
+            );
           }
         }
       },
@@ -71,10 +76,7 @@ class _LocationView extends StatelessWidget {
                 const SizedBox(height: 12),
                 Text(
                   'By sharing your location, we can provide a faster and more precise ride booking and pickup experience.',
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: Colors.grey[600],
-                  ),
+                  style: TextStyle(fontSize: 14, color: Colors.grey[600]),
                   textAlign: TextAlign.center,
                 ),
                 const Spacer(flex: 3),
@@ -82,14 +84,22 @@ class _LocationView extends StatelessWidget {
                   width: double.infinity,
                   height: 50,
                   child: ElevatedButton(
-                    onPressed: () => context.read<LocationBloc>().add(RequestLocationPermission()),
+                    onPressed: () => context.read<LocationBloc>().add(
+                      RequestLocationPermission(),
+                    ),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.orange,
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
                     ),
                     child: const Text(
                       'Allow Permission',
-                      style: TextStyle(fontSize: 18, color: Colors.white, fontWeight: FontWeight.bold),
+                      style: TextStyle(
+                        fontSize: 18,
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
                 ),
@@ -99,18 +109,24 @@ class _LocationView extends StatelessWidget {
                   height: 50,
                   child: OutlinedButton(
                     onPressed: () {
-                         // Prepare for manual entry logic
-                         ScaffoldMessenger.of(context).showSnackBar(
-                           const SnackBar(content: Text('Manual entry selected')),
-                         );
+                      // Prepare for manual entry logic
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('Manual entry selected')),
+                      );
                     },
                     style: OutlinedButton.styleFrom(
                       side: const BorderSide(color: Color(0xFF1E3A8A)),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
                     ),
                     child: const Text(
                       'Enter pickup manually',
-                      style: TextStyle(fontSize: 18, color: Color(0xFF1E3A8A), fontWeight: FontWeight.bold),
+                      style: TextStyle(
+                        fontSize: 18,
+                        color: Color(0xFF1E3A8A),
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
                 ),
