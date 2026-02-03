@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sybrox_go_app/features/auth/presentation/bloc/otp_bloc.dart';
 import 'package:sybrox_go_app/features/auth/presentation/bloc/otp_event.dart';
 import 'package:sybrox_go_app/features/auth/presentation/bloc/otp_state.dart';
+import 'package:sybrox_go_app/features/auth/presentation/pages/pickup_drop.dart';
 import 'package:sybrox_go_app/features/auth/presentation/pages/registration_page.dart';
 
 class LoginOtpPage extends StatefulWidget {
@@ -67,7 +68,7 @@ class _LoginOtpPageState extends State<LoginOtpPage> {
           ).showSnackBar(const SnackBar(content: Text("OTP Verified !!")));
           Navigator.pushReplacement(
             context,
-            MaterialPageRoute(builder: (_) => const Registration()),
+            MaterialPageRoute(builder: (_) => const PickupDropPage()),
           );
         }
         if (state is OtpError) {
@@ -242,7 +243,7 @@ class _LoginOtpPageState extends State<LoginOtpPage> {
           style: TextStyle(
             fontSize: 22,
             fontWeight: FontWeight.w600,
-            color: Colors.black12,
+            color: Colors.indigo,
           ),
         ),
         const SizedBox(height: 6),

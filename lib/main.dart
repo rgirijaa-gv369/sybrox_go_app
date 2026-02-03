@@ -15,7 +15,10 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(colorScheme: .fromSeed(seedColor: Colors.deepPurple)),
+      theme: ThemeData(
+        fontFamily: 'Poppins',
+        colorScheme: .fromSeed(seedColor: Colors.indigo),
+      ),
       home: BlocProvider(
         create: (_) => OtpBloc(OtpRepository()),
         child: const LoginOtpPage(),
