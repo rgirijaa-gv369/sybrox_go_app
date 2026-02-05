@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-
+import 'package:sybrox_go_app/features/auth/presentation/pages/reward_page.dart';
 
 class RideCompletionScreen extends StatefulWidget {
   const RideCompletionScreen({Key? key}) : super(key: key);
@@ -38,6 +38,8 @@ class _RideCompletionScreenState extends State<RideCompletionScreen> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
+        backgroundColor:  Colors.orange.shade50,
+
         title: const Text('Thank You!'),
         content: Text(
           'Rating: $_rating stars\nFeedback: ${_feedbackController.text.isEmpty ? "No feedback provided" : _feedbackController.text}',
@@ -45,14 +47,20 @@ class _RideCompletionScreenState extends State<RideCompletionScreen> {
         actions: [
           TextButton(
             onPressed: () {
-              Navigator.of(context).pop();
+    Navigator.pushReplacement(
+    context,
+    MaterialPageRoute(builder: (_) => const  CoinRewardScreen()),
+    );
 
               setState(() {
                 _rating = 0;
                 _feedbackController.clear();
               });
             },
-            child: const Text('OK'),
+            child: const Text('OK',style: TextStyle(
+              color: Colors.black,
+              fontWeight: FontWeight.bold,
+            ),),
           ),
         ],
       ),
@@ -216,7 +224,7 @@ class _RideCompletionScreenState extends State<RideCompletionScreen> {
                     const SizedBox(width: 12),
                     Expanded(
                       child: ElevatedButton(
-                        onPressed: (){},
+                        onPressed: _handleSubmit,
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.orange,
                           padding: const EdgeInsets.symmetric(vertical: 16),
