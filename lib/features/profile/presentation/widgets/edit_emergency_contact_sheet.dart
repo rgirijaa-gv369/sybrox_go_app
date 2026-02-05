@@ -82,7 +82,6 @@ class _EditEmergencyContactSheetState extends State<EditEmergencyContactSheet> {
                   ),
                   const SizedBox(height: 24),
 
-                  // Contact List
                   Column(
                     children: [
                       ..._contacts.map((contact) {

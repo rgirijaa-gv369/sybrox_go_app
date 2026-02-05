@@ -252,7 +252,7 @@ class PaymentPage extends StatelessWidget {
               child: Row(
                 children: [
                   // Cash Icon Placeholder
-                  Image.asset('assets/images/cash.png', width: 32, height: 32),
+                  Image.asset('assets/images/cash1.png', width: 32, height: 32),
                   const SizedBox(width: 16),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,

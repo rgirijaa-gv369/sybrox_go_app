@@ -9,6 +9,11 @@ import '../saved_location/saved_location_page.dart';
 import '../rewards/pages/rewards_page.dart';
 import '../payment/pages/payment_page.dart';
 import '../refer_and_earn/pages/refer_and_earn_page.dart';
+import '../rewards/pages/coin_page.dart';
+import '../settings/pages/settings_page.dart';
+import '../help_and_support/pages/help_support_page.dart';
+import '../help_and_support/pages/claims_page.dart';
+import '../../../ride/presentation/pages/pickup_drop_page.dart';
 
 class MenuDrawer extends StatelessWidget {
   final String? gender;
@@ -326,6 +331,12 @@ class MenuDrawer extends StatelessWidget {
             iconBgColor: const Color(0xFFFFF9E6),
             iconColor: const Color(0xFFFFB300),
             context: context,
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const CoinPage()),
+              );
+            },
           ),
           _buildMenuItem(
             iconPath: 'assets/images/Menus/settings_icon.png',
@@ -334,6 +345,12 @@ class MenuDrawer extends StatelessWidget {
             iconBgColor: const Color(0xFFE8F8F0),
             iconColor: const Color(0xFF4CAF50),
             context: context,
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const SettingsPage()),
+              );
+            },
           ),
           _buildMenuItem(
             iconPath: 'assets/images/Menus/help_support_icon.png',
@@ -342,6 +359,14 @@ class MenuDrawer extends StatelessWidget {
             iconBgColor: const Color(0xFFFFF4E0),
             iconColor: const Color(0xFFFF9800),
             context: context,
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const HelpSupportPage(),
+                ),
+              );
+            },
           ),
           _buildMenuItem(
             iconPath: 'assets/images/Menus/claims_icon.png',
@@ -350,6 +375,12 @@ class MenuDrawer extends StatelessWidget {
             iconBgColor: const Color(0xFFFCE8F0),
             iconColor: const Color(0xFFE91E63),
             context: context,
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const ClaimsPage()),
+              );
+            },
           ),
         ],
       ),

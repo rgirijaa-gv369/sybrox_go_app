@@ -41,6 +41,12 @@ dependencies:
   dartz: ^0.10.1
   pinput: ^6.0.1
   permission_handler: ^12.0.1
+  google_maps_flutter: ^2.14.0
+  flutter_map: ^6.0.0
+  latlong2: ^0.9.0
+  geolocator: ^13.0.1
+  geocoding: ^3.0.0
+  http: ^1.6.0
 
 dev_dependencies:
   flutter_test:
@@ -68,6 +74,9 @@ flutter:
   assets:
     - assets/images/
     - assets/images/Menus/
+    - assets/images/coins/
+    - assets/images/helpand-support/
+    - assets/images/Settings/
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

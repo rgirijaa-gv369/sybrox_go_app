@@ -5,6 +5,7 @@ import '../bloc/home_bloc.dart';
 import '../bloc/home_event.dart';
 import '../bloc/home_state.dart';
 import '../../../menu/presentation/widgets/menu_drawer.dart';
+import '../../../ride/presentation/pages/pickup_drop_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -193,7 +194,14 @@ class _HomePageState extends State<HomePage> {
                     width: 105,
                     height: 32,
                     child: ElevatedButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const PickupDropPage(),
+                          ),
+                        );
+                      },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: const Color(0xFFCC9966),
                         foregroundColor: Colors.white,
