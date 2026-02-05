@@ -59,7 +59,7 @@ class _CoinRewardScreenState extends State<CoinRewardScreen>
   void _handleClaimCoins() async {
     if (_isClaimed) return;
 
-    // Button press animation
+
     await _buttonController.forward();
     await _buttonController.reverse();
 
@@ -67,7 +67,7 @@ class _CoinRewardScreenState extends State<CoinRewardScreen>
       _isClaimed = true;
     });
 
-    // Show success dialog
+
     await Future.delayed(const Duration(milliseconds: 300));
     if (!mounted) return;
 
@@ -140,20 +140,160 @@ class _CoinRewardScreenState extends State<CoinRewardScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SizedBox.expand(
-        child: Image.asset(
-          'assets/images/success_backgroud.png',
-          fit: BoxFit.cover,
-        ),
-      ),
+      body: Stack(
+        children: [
+          SizedBox.expand(
+            child: Image.asset(
+              'assets/images/success_background.png',
+              fit: BoxFit.fill,
+            ),
+          ),
+    Expanded(
+    child: Column(
+    mainAxisAlignment: MainAxisAlignment.center,
+    children: [
+    Image.asset(
+    'assets/images/success_coins.png',
+
+    ),
+
+    const SizedBox(height: 20),
+      FadeTransition(
+        opacity: _coinAnimation,
+        child: const Padding(
+          padding: EdgeInsets.symmetric(horizontal: 40),
+          child: Text(
+            "You've received 10 coins for this trip.",
+          textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: 22,
+              fontWeight: FontWeight.bold,
+              color: Colors.black87,
+              height: 1.3,
+            ),
+          ),
+        ),),
+      const SizedBox(height: 20),
+      FadeTransition(
+        opacity: _coinAnimation,
+        child: Container(
+          margin: const EdgeInsets.all(24),
+          padding: const EdgeInsets.all(20),
+          decoration: BoxDecoration(
+            color: const Color(0xFFFFE5B4),
+            borderRadius: BorderRadius.circular(24),
+          ),
+          child: Column(
+            children: [
+
+              Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 20,
+                  vertical: 16,
+                ),
+                decoration: BoxDecoration(
+                  color: Colors.white.withOpacity(0.7),
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Image.asset(
+                      'assets/images/single_point.png',
+                      width: 32,
+                      height: 32,
+                      errorBuilder: (context, error, stackTrace) {
+                        return Container(
+                          width: 32,
+                          height: 32,
+                          decoration: BoxDecoration(
+                            color: Colors.orange,
+                            shape: BoxShape.circle,
+                            border: Border.all(
+                              color: Colors.white,
+                              width: 2,
+                            ),
+                          ),
+                          child: const Center(
+                            child: Text(
+                              '₹',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 18,
+                              ),
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                    const SizedBox(width: 12),
+                    const Text(
+                      '10 coins',
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: Color(0xFFD97706),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+
+              const SizedBox(height: 16),
+
+
+              CustomPaint(
+                size: const Size(double.infinity, 1),
+                painter: DashedLinePainter(),
+              ),
+
+              const SizedBox(height: 16),
+
+
+              AnimatedBuilder(
+                animation: _buttonScale,
+                builder: (context, child) {
+                  return Transform.scale(
+                    scale: _buttonScale.value,
+                    child: child,
+                  );
+                },
+                child: SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    onPressed: _isClaimed ? null : _handleClaimCoins,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.white,
+                      disabledBackgroundColor: Colors.grey[300],
+                      padding: const EdgeInsets.symmetric(vertical: 16),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                      elevation: 0,
+                    ),
+                    child: Text(
+                      _isClaimed ? 'Claimed!' : 'Claim the coins',
+                      style: const TextStyle(
+                        color: Colors.black87,
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),)
+        ],
+
+      ),)])
     );
   }
 }
 
 
-
-
-// Coin stack widget
 class CoinStack extends StatelessWidget {
   const CoinStack({Key? key}) : super(key: key);
 
@@ -165,7 +305,7 @@ class CoinStack extends StatelessWidget {
       child: Stack(
         alignment: Alignment.center,
         children: [
-          // Shadow
+
           Positioned(
             bottom: 0,
             child: Container(
@@ -185,7 +325,7 @@ class CoinStack extends StatelessWidget {
             ),
           ),
 
-          // Coins
+
           Positioned(
             bottom: 25,
             child: _buildCoin(0),
@@ -256,7 +396,6 @@ class CoinStack extends StatelessWidget {
   }
 }
 
-// Dashed line painter
 class DashedLinePainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
