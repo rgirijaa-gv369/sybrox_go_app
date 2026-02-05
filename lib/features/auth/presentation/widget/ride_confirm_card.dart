@@ -2,8 +2,19 @@ import 'package:flutter/material.dart';
 
 import '../pages/pickup_drop.dart';
 
-class RideConfirmationCard extends StatelessWidget {
+import '../pages/ride_completion.dart';
+
+class RideConfirmationCard extends StatefulWidget {
   const RideConfirmationCard({super.key});
+
+  @override
+  State<RideConfirmationCard> createState() => _RideConfirmationCardState();
+}
+
+class _RideConfirmationCardState extends State<RideConfirmationCard> {
+  int? selectedAmount;
+
+  final List<int> amounts = [10, 20, 30];
 
   @override
   Widget build(BuildContext context)  {
@@ -37,7 +48,7 @@ class RideConfirmationCard extends StatelessWidget {
               children: [
                 const CircleAvatar(
                   radius: 22,
-                  backgroundImage: AssetImage('assets/profile.jpg'),
+                  backgroundImage: AssetImage('assets/images/profile.png'),
                 ),
                 const SizedBox(width: 12),
                 Expanded(
@@ -88,7 +99,6 @@ class RideConfirmationCard extends StatelessWidget {
 
             const SizedBox(height: 16),
 
-
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
               decoration: BoxDecoration(
@@ -105,6 +115,7 @@ class RideConfirmationCard extends StatelessWidget {
                       style: TextStyle(fontSize: 13),
                     ),
                   ),
+                  const SizedBox(width: 8),
                   CircleAvatar(
                     radius: 18,
                     backgroundColor: Colors.grey.shade300,
@@ -116,11 +127,9 @@ class RideConfirmationCard extends StatelessWidget {
 
             const SizedBox(height: 20),
 
-
             Container(
               padding: const EdgeInsets.all(16),
               child: Row(
-
                 children: [
                   Expanded(
                     child: Column(
@@ -186,8 +195,26 @@ class RideConfirmationCard extends StatelessWidget {
               ),
             ),
 
-            const SizedBox(height: 20),
+            Padding(
+              padding: const EdgeInsets.only(left: 16.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  const Text(
+                    "Add amount",
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  const SizedBox(width: 24),
+                  ...amounts.map((amount) => _amountChip(amount)),
 
+                ],
+              ),
+            ),
+
+            const SizedBox(height: 20),
             SizedBox(
               width: double.infinity,
               child: OutlinedButton(
@@ -207,10 +234,30 @@ class RideConfirmationCard extends StatelessWidget {
                 ),
                 child:  Text(
                   'Cancel Ride',
-                  style: TextStyle(fontSize: 16),
+                  style: TextStyle(fontSize: 16,fontWeight: FontWeight.bold),
                 ),
               ),
             ),
+            const SizedBox(height: 20),
+      SizedBox(
+        width: double.infinity,
+        child: ElevatedButton(
+          onPressed: (){
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (_) => const RideCompletionScreen()),
+            );
+          },
+          style: ElevatedButton.styleFrom(
+            padding: const EdgeInsets.symmetric(vertical: 14),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8),
+            ),
+            backgroundColor:
+            Colors.orange,
+          ),
+              child:  Text("Proceed to Pay", style: TextStyle(fontWeight: FontWeight.bold, color:  Colors.white,fontSize: 16),)
+        ),),
           ],
         ),
       ),
@@ -218,4 +265,42 @@ class RideConfirmationCard extends StatelessWidget {
     );
 
   }
+
+  Widget _amountChip(int amount) {
+    final bool isSelected = selectedAmount == amount;
+
+    return Padding(
+      padding: const EdgeInsets.only(right: 8),
+      child: Listener(
+        behavior: HitTestBehavior.translucent,
+        onPointerDown: (_) {
+          debugPrint("Tapped ₹$amount");
+
+          setState(() {
+            selectedAmount = amount;
+          });
+        },
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(20),
+            color: isSelected ? Colors.blue.shade50 : Colors.transparent,
+            border: Border.all(
+              color: isSelected ? Colors.black : Colors.grey.shade400,
+            ),
+          ),
+          child: Text(
+            "₹ $amount",
+            style: TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.w700,
+              color: isSelected ? Colors.black : Colors.black,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+
 }

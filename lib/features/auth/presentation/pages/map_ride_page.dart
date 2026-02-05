@@ -8,6 +8,7 @@ import '../bloc/ride_status/ride_status_bloc.dart';
 import '../widget/bottom_ride_card.dart';
 import '../widget/ride_confirm_card.dart';
 import '../widget/ride_status_card.dart';
+import '../widget/rider_not_found.dart';
 
 class RideMapScreen extends StatefulWidget {
   final LatLng pickup;
@@ -110,44 +111,50 @@ class _RideMapScreenState extends State<RideMapScreen> {
     return Scaffold(
       body: Stack(
         children: [
-          GoogleMap(
-            initialCameraPosition: CameraPosition(
-              target: _pGoogleLoc, // India center
-              zoom: 13,
-            ),
-
-            myLocationEnabled: true,
-            myLocationButtonEnabled: false,
-            onMapCreated: (controller) {
-              if (!_mapController.isCompleted) {
-                _mapController.complete(controller);
-              }
-            },
-            markers: {
-              Marker(
-                markerId: const MarkerId("pickup"),
-                position: _pickup,
-                infoWindow: const InfoWindow(title: "Pickup"),
+          IgnorePointer(
+            ignoring: true,
+            child: GoogleMap(
+              initialCameraPosition: CameraPosition(
+                target: _pGoogleLoc, // India center
+                zoom: 13,
               ),
-              Marker(
-                markerId: const MarkerId("drop"),
-                position: _drop,
-                icon: BitmapDescriptor.defaultMarkerWithHue(
-                  BitmapDescriptor.hueRed,
-                ),
-                infoWindow: const InfoWindow(title: "Drop"),
-              ),
-              if (_isRideBooked)
+              zoomGesturesEnabled: false,
+              scrollGesturesEnabled: false,
+              rotateGesturesEnabled: false,
+              tiltGesturesEnabled: false,
+              myLocationButtonEnabled: false,
+              myLocationEnabled: true,
+              onMapCreated: (controller) {
+                if (!_mapController.isCompleted) {
+                  _mapController.complete(controller);
+                }
+              },
+              markers: {
                 Marker(
-                  markerId: const MarkerId("driver"),
-                  position: _driverLocation,
-                  icon: BitmapDescriptor.defaultMarkerWithHue(
-                    BitmapDescriptor.hueAzure,
-                  ),
-                  infoWindow:
-                  const InfoWindow(title: "Driver on the way"),
+                  markerId: const MarkerId("pickup"),
+                  position: _pickup,
+                  infoWindow: const InfoWindow(title: "Pickup"),
                 ),
-            },
+                Marker(
+                  markerId: const MarkerId("drop"),
+                  position: _drop,
+                  icon: BitmapDescriptor.defaultMarkerWithHue(
+                    BitmapDescriptor.hueRed,
+                  ),
+                  infoWindow: const InfoWindow(title: "Drop"),
+                ),
+                if (_isRideBooked)
+                  Marker(
+                    markerId: const MarkerId("driver"),
+                    position: _driverLocation,
+                    icon: BitmapDescriptor.defaultMarkerWithHue(
+                      BitmapDescriptor.hueAzure,
+                    ),
+                    infoWindow:
+                    const InfoWindow(title: "Driver on the way"),
+                  ),
+              },
+            ),
           ),
 
 
@@ -205,6 +212,10 @@ class _RideMapScreenState extends State<RideMapScreen> {
       case RideStep.status:
         return RideStatusCard(
           onConfirmed: () => goToNext(RideStep.confirmation),
+        );
+      case RideStep.notFound:
+        return RiderNotFoundCard(
+          onRetry: () => goToNext(RideStep.selectRide),
         );
 
       case RideStep.confirmation:
