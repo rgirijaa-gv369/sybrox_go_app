@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pinput/pinput.dart';
@@ -16,18 +17,20 @@ class LoginOtpPage extends StatefulWidget {
 
 class _LoginOtpPageState extends State<LoginOtpPage> {
   bool isOtpScreen = false;
-
-  final TextEditingController phoneController = TextEditingController();
+  bool isSignin = false;
+  late TextEditingController phoneController = TextEditingController();
 
   String enteredOtp = '';
 
-  final List<TextEditingController> otpControllers = List.generate(
+  late List<TextEditingController> otpControllers = List.generate(
     4,
     (_) => TextEditingController(),
   );
 
   int resendSeconds = 10;
   Timer? timer;
+
+
 
   void startResendTimer() {
     resendSeconds = 10;
@@ -48,6 +51,14 @@ class _LoginOtpPageState extends State<LoginOtpPage> {
   }
 
   bool get isOtpValid => enteredOtp.length == 4;
+
+  @override
+  void initState() {
+    super.initState();
+    phoneController = TextEditingController();
+
+  }
+
 
   @override
   void dispose() {
@@ -160,16 +171,21 @@ class _LoginOtpPageState extends State<LoginOtpPage> {
                 if (!isOtpScreen)
                   Center(
                     child: RichText(
-                      text: const TextSpan(
-                        text: "Already have an account? ",
-                        style: TextStyle(color: Colors.grey, fontSize: 13),
+                      text: TextSpan(
+                        text:  isSignin ?  "Don't have an account? " : "Already have an account? ",
+                        style: const TextStyle(color: Colors.grey, fontSize: 13),
                         children: [
                           TextSpan(
-                            text: "Sign in",
-                            style: TextStyle(
+                            text:  isSignin ? "Create Account" : "Sign in",
+                            style: const TextStyle(
                               color: Colors.orange,
                               fontWeight: FontWeight.w500,
                             ),
+                              recognizer: TapGestureRecognizer()
+                                ..onTap = (){
+                                  setState(() {
+                                    isSignin = !isSignin;
+                                  });}
                           ),
                         ],
                       ),
@@ -185,51 +201,79 @@ class _LoginOtpPageState extends State<LoginOtpPage> {
     );
   }
 
+
   Widget _loginView() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Text(
-          "What’s your number?",
-          style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600),
-        ),
-        const SizedBox(height: 6),
-        Text(
-          "Enter your phone number to proceed",
-          style: TextStyle(color: Colors.grey.shade600),
-        ),
-        const SizedBox(height: 30),
-
-        Container(
-          padding: const EdgeInsets.symmetric(horizontal: 12),
-          decoration: BoxDecoration(
-            color: Colors.grey.shade100,
-            borderRadius: BorderRadius.circular(10),
-            border: Border.all(color: Colors.grey.shade300),
-          ),
-          child: Row(
+      children: [ if (isSignin)...[
+        Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               const Text(
-                "🇮🇳  +91 | ",
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+                "Welcome Back",
+                style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600),
               ),
-              const SizedBox(width: 10),
-              Expanded(
-                child: TextField(
-                  controller: phoneController,
-                  keyboardType: TextInputType.phone,
-                  maxLength: 10,
-                  decoration: const InputDecoration(
-                    counterText: "",
-                    hintText: "Phone number",
-                    border: InputBorder.none,
-                  ),
-                  onChanged: (_) => setState(() {}),
-                ),
+              const SizedBox(height: 6),
+              Text(
+                "Log in and pick up right where you left",
+                style: TextStyle(color: Colors.grey.shade600),
               ),
             ],
           ),
         ),
+        ],
+        const SizedBox(height: 30),
+
+       Column(
+         mainAxisAlignment: MainAxisAlignment.start,
+         crossAxisAlignment: CrossAxisAlignment.start,
+         children: [
+           const Text(
+             "What’s your number?",
+             style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600),
+           ),
+           const SizedBox(height: 6),
+           Text(
+             "Enter your phone number to proceed",
+             style: TextStyle(color: Colors.grey.shade600),
+           ),
+           const SizedBox(height: 20),
+
+           Container(
+             padding: const EdgeInsets.symmetric(horizontal: 12),
+             decoration: BoxDecoration(
+               color: Colors.grey.shade100,
+               borderRadius: BorderRadius.circular(10),
+               border: Border.all(color: Colors.grey.shade300),
+             ),
+             child: Row(
+               children: [
+                 const Text(
+                   "🇮🇳  +91 | ",
+                   style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+                 ),
+                 const SizedBox(width: 10),
+                 Expanded(
+                   child: TextField(
+                     controller: phoneController,
+                     keyboardType: TextInputType.phone,
+                     maxLength: 10,
+                     decoration: const InputDecoration(
+                       counterText: "",
+                       hintText: "Phone number",
+                       border: InputBorder.none,
+                     ),
+                     onChanged: (_) => setState(() {}),
+                   ),
+                 ),
+               ],
+             ),
+           ),
+         ],
+       )
+
       ],
     );
   }

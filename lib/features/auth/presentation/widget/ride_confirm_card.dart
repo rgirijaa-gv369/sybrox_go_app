@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sybrox_go_app/features/auth/presentation/widget/ride_cancel_card.dart';
 
 import '../pages/pickup_drop.dart';
 
@@ -218,11 +219,8 @@ class _RideConfirmationCardState extends State<RideConfirmationCard> {
             SizedBox(
               width: double.infinity,
               child: OutlinedButton(
-                onPressed: () {
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(builder: (_) => const PickupDropPage()),
-                  );
+                onPressed: (){
+                  CancelRideHelper(context).showCancelDialog();
                 },
                 style: OutlinedButton.styleFrom(
                   foregroundColor: Colors.red,
