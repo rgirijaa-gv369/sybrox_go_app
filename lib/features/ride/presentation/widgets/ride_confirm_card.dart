@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:sybrox_go_app/features/home/presentation/pages/home_page.dart';
+import 'package:sybrox_go_app/features/ride/presentation/widgets/ride_cancel_sheet.dart';
+
 import '../pages/pickup_drop_page.dart';
 import '../../../chat/presentation/pages/chat_page.dart';
 import '../../../chat/presentation/pages/call_page.dart';
@@ -246,11 +247,7 @@ class _RideConfirmationCardState extends State<RideConfirmationCard> {
               width: double.infinity,
               child: OutlinedButton(
                 onPressed: () {
-                  Navigator.pushAndRemoveUntil(
-                    context,
-                    MaterialPageRoute(builder: (_) => HomePage()),
-                    (route) => false,
-                  );
+                  CancelRideHelper(context).showCancelDialog();
                 },
                 style: OutlinedButton.styleFrom(
                   foregroundColor: Colors.red,
