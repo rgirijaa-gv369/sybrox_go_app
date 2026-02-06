@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+
 import 'core/theme/app_theme.dart';
 import 'features/home/presentation/pages/home_page.dart';
 import 'features/home/presentation/bloc/home_bloc.dart';
@@ -29,7 +30,7 @@ class MyApp extends StatelessWidget {
 
 final GoRouter _router = GoRouter(
   // initialLocation: '/login',
-  initialLocation: '/', // Start at Login for this flow
+  initialLocation: '/login', // Start at Login for this flow
   routes: [
     GoRoute(
       path: '/',

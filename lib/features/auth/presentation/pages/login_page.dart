@@ -7,6 +7,7 @@ import 'package:sybrox_go_app/features/auth/presentation/bloc/otp_bloc.dart';
 import 'package:sybrox_go_app/features/auth/presentation/bloc/otp_event.dart';
 import 'package:sybrox_go_app/features/auth/presentation/bloc/otp_state.dart';
 import 'package:sybrox_go_app/features/auth/presentation/pages/pickup_drop.dart';
+import 'package:go_router/go_router.dart';
 
 class LoginOtpPage extends StatefulWidget {
   const LoginOtpPage({super.key});
@@ -204,7 +205,7 @@ class _LoginOtpPageState extends State<LoginOtpPage> {
               children: [
                 const Text(
                   "Welcome Back",
-                  style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600),
+                  style: TextStyle(color: Colors.black,fontSize: 22, fontWeight: FontWeight.w600),
                 ),
                 const SizedBox(height: 6),
                 Text(
@@ -222,7 +223,7 @@ class _LoginOtpPageState extends State<LoginOtpPage> {
           children: [
             const Text(
               "What’s your number?",
-              style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600),
+              style: TextStyle(color: Colors.black,fontSize: 22, fontWeight: FontWeight.w600),
             ),
             const SizedBox(height: 6),
             Text(
@@ -241,7 +242,7 @@ class _LoginOtpPageState extends State<LoginOtpPage> {
                 children: [
                   const Text(
                     "🇮🇳  +91 | ",
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+                    style: TextStyle(color: Colors.black,fontSize: 16, fontWeight: FontWeight.w500),
                   ),
                   const SizedBox(width: 10),
                   Expanded(
@@ -249,6 +250,10 @@ class _LoginOtpPageState extends State<LoginOtpPage> {
                       controller: phoneController,
                       keyboardType: TextInputType.phone,
                       maxLength: 10,
+                      style: const TextStyle(
+                        color: Colors.black, // text color
+                        fontSize: 16,
+                      ),
                       decoration: const InputDecoration(
                         counterText: "",
                         hintText: "Phone number",
@@ -272,7 +277,7 @@ class _LoginOtpPageState extends State<LoginOtpPage> {
       height: 50,
       textStyle: const TextStyle(fontSize: 22, color: Colors.black),
       decoration: BoxDecoration(
-        color: Colors.grey.shade100,
+        color: Colors.grey.shade50,
         borderRadius: BorderRadius.circular(8),
         border: Border.all(color: Colors.transparent),
       ),
@@ -286,15 +291,20 @@ class _LoginOtpPageState extends State<LoginOtpPage> {
           style: TextStyle(
             fontSize: 22,
             fontWeight: FontWeight.w600,
-            color: Colors.black12,
+            color: Colors.black,
           ),
         ),
         const SizedBox(height: 6),
-        const Text("Enter verification code"),
+        const Text("Enter verification code", style: TextStyle(
+          fontSize: 14,
+          fontWeight: FontWeight.w100,
+          color: Colors.black,
+        ),),
         const SizedBox(height: 4),
         Text(
           "sent to ${phoneController.text}",
-          style: TextStyle(color: Colors.grey.shade600),
+          style: TextStyle(fontSize: 14,
+              fontWeight: FontWeight.w100,color: Colors.grey.shade600),
         ),
 
         const SizedBox(height: 30),
@@ -306,12 +316,13 @@ class _LoginOtpPageState extends State<LoginOtpPage> {
           defaultPinTheme: defaultPinTheme,
           focusedPinTheme: defaultPinTheme.copyWith(
             decoration: defaultPinTheme.decoration!.copyWith(
-              border: Border.all(color: Colors.indigo),
+              border: Border.all(color: Colors.orange),
             ),
           ),
           submittedPinTheme: defaultPinTheme.copyWith(
             decoration: BoxDecoration(
               color: Colors.grey.shade300,
+              border: Border.all(color:Colors.black ),
               borderRadius: BorderRadius.circular(12),
             ),
           ),
@@ -330,13 +341,14 @@ class _LoginOtpPageState extends State<LoginOtpPage> {
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
             decoration: BoxDecoration(
+              color: resendSeconds == 0 ? Colors.orange : Colors.white,
               border: Border.all(color: Colors.grey.shade300),
               borderRadius: BorderRadius.circular(20),
             ),
             child: Text(
               resendSeconds == 0 ? "Resend OTP" : "Resend in ${resendSeconds}s",
               style: TextStyle(
-                color: resendSeconds == 0 ? Colors.orange : Colors.grey,
+                color: resendSeconds == 0 ? Colors.white : Colors.grey,
               ),
             ),
           ),

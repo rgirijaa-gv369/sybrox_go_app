@@ -42,7 +42,7 @@ class _RegistrationView extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       const SizedBox(height: 10),
-                      // Header with Help Button
+
                       Stack(
                         alignment: Alignment.centerLeft,
                         children: [
@@ -50,7 +50,7 @@ class _RegistrationView extends StatelessWidget {
                             alignment: Alignment.centerRight,
                             child: _HelpButton(
                               onTap: () {
-                                // Placeholder action
+
                                 showModalBottomSheet(
                                   context: context,
                                   builder: (_) =>
