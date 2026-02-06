@@ -7,6 +7,7 @@ import 'package:sybrox_go_app/features/auth/presentation/bloc/otp_bloc.dart';
 import 'package:sybrox_go_app/features/auth/presentation/bloc/otp_event.dart';
 import 'package:sybrox_go_app/features/auth/presentation/bloc/otp_state.dart';
 import 'package:sybrox_go_app/features/auth/presentation/pages/pickup_drop.dart';
+import 'package:go_router/go_router.dart';
 
 class LoginOtpPage extends StatefulWidget {
   const LoginOtpPage({super.key});
@@ -18,19 +19,15 @@ class LoginOtpPage extends StatefulWidget {
 class _LoginOtpPageState extends State<LoginOtpPage> {
   bool isOtpScreen = false;
   bool isSignin = false;
-  late TextEditingController phoneController = TextEditingController();
-
+  late TextEditingController phoneController;
   String enteredOtp = '';
-
-  late List<TextEditingController> otpControllers = List.generate(
+  final List<TextEditingController> otpControllers = List.generate(
     4,
     (_) => TextEditingController(),
   );
 
   int resendSeconds = 10;
   Timer? timer;
-
-
 
   void startResendTimer() {
     resendSeconds = 10;
@@ -56,9 +53,7 @@ class _LoginOtpPageState extends State<LoginOtpPage> {
   void initState() {
     super.initState();
     phoneController = TextEditingController();
-
   }
-
 
   @override
   void dispose() {
@@ -78,10 +73,7 @@ class _LoginOtpPageState extends State<LoginOtpPage> {
           ScaffoldMessenger.of(
             context,
           ).showSnackBar(const SnackBar(content: Text("OTP Verified !!")));
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (_) => const PickupDropPage()),
-          );
+          context.go('/registration');
         }
         if (state is OtpError) {
           ScaffoldMessenger.of(
@@ -201,79 +193,80 @@ class _LoginOtpPageState extends State<LoginOtpPage> {
     );
   }
 
-
   Widget _loginView() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
-      children: [ if (isSignin)...[
-        Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              const Text(
-                "Welcome Back",
-                style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600),
-              ),
-              const SizedBox(height: 6),
-              Text(
-                "Log in and pick up right where you left",
-                style: TextStyle(color: Colors.grey.shade600),
-              ),
-            ],
+      children: [
+        if (isSignin) ...[
+          Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                const Text(
+                  "Welcome Back",
+                  style: TextStyle(color: Colors.black,fontSize: 22, fontWeight: FontWeight.w600),
+                ),
+                const SizedBox(height: 6),
+                Text(
+                  "Log in and pick up right where you left",
+                  style: TextStyle(color: Colors.grey.shade600),
+                ),
+              ],
+            ),
           ),
-        ),
         ],
         const SizedBox(height: 30),
-
-       Column(
-         mainAxisAlignment: MainAxisAlignment.start,
-         crossAxisAlignment: CrossAxisAlignment.start,
-         children: [
-           const Text(
-             "What’s your number?",
-             style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600),
-           ),
-           const SizedBox(height: 6),
-           Text(
-             "Enter your phone number to proceed",
-             style: TextStyle(color: Colors.grey.shade600),
-           ),
-           const SizedBox(height: 20),
-
-           Container(
-             padding: const EdgeInsets.symmetric(horizontal: 12),
-             decoration: BoxDecoration(
-               color: Colors.grey.shade100,
-               borderRadius: BorderRadius.circular(10),
-               border: Border.all(color: Colors.grey.shade300),
-             ),
-             child: Row(
-               children: [
-                 const Text(
-                   "🇮🇳  +91 | ",
-                   style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
-                 ),
-                 const SizedBox(width: 10),
-                 Expanded(
-                   child: TextField(
-                     controller: phoneController,
-                     keyboardType: TextInputType.phone,
-                     maxLength: 10,
-                     decoration: const InputDecoration(
-                       counterText: "",
-                       hintText: "Phone number",
-                       border: InputBorder.none,
-                     ),
-                     onChanged: (_) => setState(() {}),
-                   ),
-                 ),
-               ],
-             ),
-           ),
-         ],
-       )
-
+        Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              "What’s your number?",
+              style: TextStyle(color: Colors.black,fontSize: 22, fontWeight: FontWeight.w600),
+            ),
+            const SizedBox(height: 6),
+            Text(
+              "Enter your phone number to proceed",
+              style: TextStyle(color: Colors.grey.shade600),
+            ),
+            const SizedBox(height: 20),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 12),
+              decoration: BoxDecoration(
+                color: Colors.grey.shade100,
+                borderRadius: BorderRadius.circular(10),
+                border: Border.all(color: Colors.grey.shade300),
+              ),
+              child: Row(
+                children: [
+                  const Text(
+                    "🇮🇳  +91 | ",
+                    style: TextStyle(color: Colors.black,fontSize: 16, fontWeight: FontWeight.w500),
+                  ),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: TextField(
+                      controller: phoneController,
+                      keyboardType: TextInputType.phone,
+                      maxLength: 10,
+                      style: const TextStyle(
+                        color: Colors.black, // text color
+                        fontSize: 16,
+                      ),
+                      decoration: const InputDecoration(
+                        counterText: "",
+                        hintText: "Phone number",
+                        border: InputBorder.none,
+                      ),
+                      onChanged: (_) => setState(() {}),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ],
     );
   }
@@ -284,11 +277,12 @@ class _LoginOtpPageState extends State<LoginOtpPage> {
       height: 50,
       textStyle: const TextStyle(fontSize: 22, color: Colors.black),
       decoration: BoxDecoration(
-        color: Colors.grey.shade100,
+        color: Colors.grey.shade50,
         borderRadius: BorderRadius.circular(8),
         border: Border.all(color: Colors.transparent),
       ),
     );
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -297,15 +291,20 @@ class _LoginOtpPageState extends State<LoginOtpPage> {
           style: TextStyle(
             fontSize: 22,
             fontWeight: FontWeight.w600,
-            color: Colors.indigo,
+            color: Colors.black,
           ),
         ),
         const SizedBox(height: 6),
-        const Text("Enter verification code"),
+        const Text("Enter verification code", style: TextStyle(
+          fontSize: 14,
+          fontWeight: FontWeight.w100,
+          color: Colors.black,
+        ),),
         const SizedBox(height: 4),
         Text(
           "sent to ${phoneController.text}",
-          style: TextStyle(color: Colors.grey.shade600),
+          style: TextStyle(fontSize: 14,
+              fontWeight: FontWeight.w100,color: Colors.grey.shade600),
         ),
 
         const SizedBox(height: 30),
@@ -317,12 +316,13 @@ class _LoginOtpPageState extends State<LoginOtpPage> {
           defaultPinTheme: defaultPinTheme,
           focusedPinTheme: defaultPinTheme.copyWith(
             decoration: defaultPinTheme.decoration!.copyWith(
-              border: Border.all(color: Colors.indigo),
+              border: Border.all(color: Colors.orange),
             ),
           ),
           submittedPinTheme: defaultPinTheme.copyWith(
             decoration: BoxDecoration(
               color: Colors.grey.shade300,
+              border: Border.all(color:Colors.black ),
               borderRadius: BorderRadius.circular(12),
             ),
           ),
@@ -333,6 +333,7 @@ class _LoginOtpPageState extends State<LoginOtpPage> {
             setState(() => enteredOtp = value);
           },
         ),
+
         const SizedBox(height: 20),
 
         GestureDetector(
@@ -340,13 +341,14 @@ class _LoginOtpPageState extends State<LoginOtpPage> {
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
             decoration: BoxDecoration(
+              color: resendSeconds == 0 ? Colors.orange : Colors.white,
               border: Border.all(color: Colors.grey.shade300),
               borderRadius: BorderRadius.circular(20),
             ),
             child: Text(
               resendSeconds == 0 ? "Resend OTP" : "Resend in ${resendSeconds}s",
               style: TextStyle(
-                color: resendSeconds == 0 ? Colors.orange : Colors.grey,
+                color: resendSeconds == 0 ? Colors.white : Colors.grey,
               ),
             ),
           ),
