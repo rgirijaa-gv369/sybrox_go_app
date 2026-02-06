@@ -1,5 +1,3 @@
-
 class ApiKeys {
-  static const String googleMapsApiKey = 'AIzaSyC...';
+  static const String googleMapsApiKey = 'AIzaSyXXXXXXXXXXXX';
 }
-
