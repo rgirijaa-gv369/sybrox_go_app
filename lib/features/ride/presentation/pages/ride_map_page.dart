@@ -3,6 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart';
 
+import '../../../../core/utils/direction_service.dart';
+import '../../../../core/utils/fare_service.dart';
+import '../../../../core/utils/location_service.dart';
 import '../../domain/entities/ride_step.dart';
 import '../bloc/ride_status/ride_status_bloc.dart';
 import '../widgets/bottom_ride_card.dart';
@@ -39,13 +42,23 @@ class _RideMapScreenState extends State<RideMapScreen> {
   LatLng _driverLocation = const LatLng(12.9229, 80.1275);
   bool _isRideBooked = false;
   bool isEnabled = true;
+  Set<Polyline> _polylines = {};
+  final DirectionService _directionService = DirectionService();
+  final FareService _fareService = FareService();
+  double _distanceKm = 0;
+  double _durationMin = 0;
+  double _fare = 0;
 
   @override
   void initState() {
     super.initState();
     _pickup = widget.pickup;
     _drop = widget.drop;
+    _isRideBooked = true;
+    _computeRideDetails();
     _moveToCurrentLocation();
+    _loadRoute();
+    _startDriverTracking();
   }
 
   Future<void> _moveToCurrentLocation() async {
@@ -75,6 +88,40 @@ class _RideMapScreenState extends State<RideMapScreen> {
     } catch (e) {
       debugPrint("Location error: $e");
     }
+  }
+
+  Future<void> _loadRoute() async {
+    try {
+      final points = await _directionService.getRoute(_pickup, _drop);
+      if (!mounted) return;
+      setState(() {
+        _polylines = {
+          Polyline(
+            polylineId: const PolylineId('route'),
+            color: Colors.blue,
+            width: 4,
+            points: points,
+          ),
+        };
+      });
+    } catch (e) {
+      debugPrint("Route error: $e");
+    }
+  }
+
+  void _computeRideDetails() {
+    final distanceKm = LocationService.calculateDistanceKm(
+      pickupLat: _pickup.latitude,
+      pickupLng: _pickup.longitude,
+      dropLat: _drop.latitude,
+      dropLng: _drop.longitude,
+    );
+    const avgSpeedKmph = 25.0;
+    final durationMin = (distanceKm / avgSpeedKmph) * 60;
+    final fare = _fareService.calculateFare(distanceKm, durationMin);
+    _distanceKm = distanceKm;
+    _durationMin = durationMin < 1 ? 1 : durationMin;
+    _fare = fare;
   }
 
   void _startDriverTracking() {
@@ -109,6 +156,7 @@ class _RideMapScreenState extends State<RideMapScreen> {
 
             myLocationEnabled: true,
             myLocationButtonEnabled: false,
+            polylines: _polylines,
             onMapCreated: (controller) {
               if (!_mapController.isCompleted) {
                 _mapController.complete(controller);
@@ -163,9 +211,10 @@ class _RideMapScreenState extends State<RideMapScreen> {
           ),
 
           if (currentStep == RideStep.selectRide)
-            Align(
-              alignment: Alignment.centerLeft,
-              child: Positioned(bottom: 200, child: _goCoinsToggle()),
+            Positioned(
+              left: 16,
+              bottom: 200,
+              child: _goCoinsToggle(),
             ),
           Align(
             alignment: Alignment.bottomCenter,
@@ -182,7 +231,12 @@ class _RideMapScreenState extends State<RideMapScreen> {
   Widget _buildBottomCard() {
     switch (currentStep) {
       case RideStep.selectRide:
-        return BottomRideCard(onNext: () => goToNext(RideStep.status));
+        return BottomRideCard(
+          onNext: () => goToNext(RideStep.status),
+          distanceKm: _distanceKm,
+          durationMin: _durationMin,
+          fare: _fare,
+        );
 
       case RideStep.status:
         return RideStatusCard(
@@ -192,7 +246,7 @@ class _RideMapScreenState extends State<RideMapScreen> {
       case RideStep.notFound:
         return RiderNotFoundCard(onRetry: () => goToNext(RideStep.selectRide));
       case RideStep.confirmation:
-        return const RideConfirmationCard();
+        return RideConfirmationCard(baseFare: _fare);
     }
   }
 

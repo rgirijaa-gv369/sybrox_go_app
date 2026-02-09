@@ -205,8 +205,8 @@ class _PickupDropViewState extends State<PickupDropView> {
                 const SizedBox(width: 10),
                 Align(
                   alignment: Alignment.center,
-                  child: _swapButton(),)
-
+                  child: _swapButton(),
+                ),
               ],
             ),
 

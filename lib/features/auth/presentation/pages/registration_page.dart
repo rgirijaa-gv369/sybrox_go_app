@@ -6,6 +6,7 @@ import '../bloc/registration_bloc.dart';
 import '../bloc/registration_event.dart';
 import '../bloc/registration_state.dart';
 import '../../../../core/utils/uppercase_formatter.dart';
+import '../../../menu/presentation/help_and_support/pages/help_support_page.dart';
 
 class RegistrationPage extends StatelessWidget {
   const RegistrationPage({super.key});
@@ -50,11 +51,11 @@ class _RegistrationView extends StatelessWidget {
                             alignment: Alignment.centerRight,
                             child: _HelpButton(
                               onTap: () {
-
-                                showModalBottomSheet(
-                                  context: context,
-                                  builder: (_) =>
-                                      const Center(child: Text("Help Content")),
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (_) => const HelpSupportPage(),
+                                  ),
                                 );
                               },
                             ),
