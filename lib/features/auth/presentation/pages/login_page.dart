@@ -8,6 +8,7 @@ import 'package:sybrox_go_app/features/auth/presentation/bloc/otp_event.dart';
 import 'package:sybrox_go_app/features/auth/presentation/bloc/otp_state.dart';
 import 'package:sybrox_go_app/features/auth/presentation/pages/pickup_drop.dart';
 import 'package:go_router/go_router.dart';
+import 'package:sybrox_go_app/features/menu/presentation/help_and_support/pages/help_support_page.dart';
 
 class LoginOtpPage extends StatefulWidget {
   const LoginOtpPage({super.key});
@@ -48,6 +49,12 @@ class _LoginOtpPageState extends State<LoginOtpPage> {
   }
 
   bool get isOtpValid => enteredOtp.length == 4;
+  bool get isPhoneInvalid {
+    final text = phoneController.text.trim();
+    if (text.isEmpty) return false;
+    final firstDigit = int.tryParse(text[0]) ?? 0;
+    return firstDigit < 6;
+  }
 
   @override
   void initState() {
@@ -92,22 +99,32 @@ class _LoginOtpPageState extends State<LoginOtpPage> {
               children: [
                 Align(
                   alignment: Alignment.topRight,
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 10,
-                      vertical: 6,
-                    ),
-                    decoration: BoxDecoration(
-                      border: Border.all(color: Colors.grey.shade300),
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: const [
-                        Icon(Icons.headset_mic, size: 16),
-                        SizedBox(width: 4),
-                        Text("Help", style: TextStyle(fontSize: 12)),
-                      ],
+                  child: GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const HelpSupportPage(),
+                        ),
+                      );
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 10,
+                        vertical: 6,
+                      ),
+                      decoration: BoxDecoration(
+                        border: Border.all(color: Colors.grey.shade300),
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: const [
+                          Icon(Icons.headset_mic, size: 16),
+                          SizedBox(width: 4),
+                          Text("Help", style: TextStyle(fontSize: 12)),
+                        ],
+                      ),
                     ),
                   ),
                 ),
@@ -265,6 +282,17 @@ class _LoginOtpPageState extends State<LoginOtpPage> {
                 ],
               ),
             ),
+            if (isPhoneInvalid) ...[
+              const SizedBox(height: 6),
+              const Text(
+                "Enter a valid 10-digit phone number starting with 6-9",
+                style: TextStyle(
+                  color: Colors.red,
+                  fontSize: 12,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ],
           ],
         ),
       ],

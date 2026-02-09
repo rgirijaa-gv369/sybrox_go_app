@@ -1,9 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:sybrox_go_app/features/menu/presentation/coupons/pages/coupons_page.dart';
+import 'package:sybrox_go_app/features/menu/presentation/payment/pages/payment_page.dart';
 import 'custom_divider.dart';
 
 class BottomRideCard extends StatelessWidget {
   final VoidCallback onNext;
-  const BottomRideCard({super.key, required this.onNext});
+  final double distanceKm;
+  final double durationMin;
+  final double fare;
+
+  const BottomRideCard({
+    super.key,
+    required this.onNext,
+    required this.distanceKm,
+    required this.durationMin,
+    required this.fare,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -40,38 +52,43 @@ class BottomRideCard extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(width: 12),
-                const Expanded(
+                Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
+                      const Text(
                         "Ride",
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      SizedBox(height: 4),
+                      const SizedBox(height: 4),
                       Row(
                         children: [
-                          Icon(Icons.access_time, size: 14),
-                          SizedBox(width: 4),
-                          Text("18 mins", style: TextStyle(fontSize: 12)),
+                          const Icon(Icons.access_time, size: 14),
+                          const SizedBox(width: 4),
+                          Text(
+                            "${durationMin.toStringAsFixed(0)} mins - "
+                            "${distanceKm.toStringAsFixed(1)} km",
+                            style: const TextStyle(fontSize: 12),
+                          ),
                         ],
                       ),
                     ],
                   ),
                 ),
-                const Text(
-                  "₹ 82",
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                Text(
+                  "Rs ${fare.toStringAsFixed(0)}",
+                  style: const TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ],
             ),
           ),
-
           const SizedBox(height: 16),
-
           ListTile(
             leading: Image.asset(
               'assets/images/cash.png',
@@ -83,9 +100,13 @@ class BottomRideCard extends StatelessWidget {
               style: TextStyle(fontWeight: FontWeight.w600),
             ),
             trailing: const Icon(Icons.chevron_right),
-            onTap: () {},
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => const PaymentPage()),
+              );
+            },
           ),
-
           const Padding(
             padding: EdgeInsets.symmetric(horizontal: 24, vertical: 14),
             child: DashedDivider(
@@ -94,7 +115,6 @@ class BottomRideCard extends StatelessWidget {
               dashSpace: 8,
             ),
           ),
-
           ListTile(
             leading: Image.asset(
               'assets/images/reward.png',
@@ -106,11 +126,14 @@ class BottomRideCard extends StatelessWidget {
               style: TextStyle(fontWeight: FontWeight.w600),
             ),
             trailing: const Icon(Icons.chevron_right),
-            onTap: () {},
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => const CouponsPage()),
+              );
+            },
           ),
-
           const SizedBox(height: 16),
-
           SizedBox(
             width: double.infinity,
             height: 52,

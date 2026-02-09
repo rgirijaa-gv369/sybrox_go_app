@@ -3,10 +3,11 @@ import 'package:sybrox_go_app/features/auth/presentation/widget/ride_cancel_card
 
 import '../pages/pickup_drop.dart';
 
-import '../pages/ride_completion.dart';
+import '../pages/receipt_page.dart';
 
 class RideConfirmationCard extends StatefulWidget {
-  const RideConfirmationCard({super.key});
+  final double baseFare;
+  const RideConfirmationCard({super.key, required this.baseFare});
 
   @override
   State<RideConfirmationCard> createState() => _RideConfirmationCardState();
@@ -19,6 +20,8 @@ class _RideConfirmationCardState extends State<RideConfirmationCard> {
 
   @override
   Widget build(BuildContext context)  {
+    final double tipAmount = (selectedAmount ?? 0).toDouble();
+    final double totalAmount = widget.baseFare + tipAmount;
     return SafeArea(
       child: Container(
         constraints: BoxConstraints(
@@ -216,6 +219,24 @@ class _RideConfirmationCardState extends State<RideConfirmationCard> {
             ),
 
             const SizedBox(height: 20),
+
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+              decoration: BoxDecoration(
+                color: Colors.grey.shade100,
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Column(
+                children: [
+                  _fareRow('Base fare', widget.baseFare),
+                  _fareRow('Tip', tipAmount),
+                  const Divider(height: 16),
+                  _fareRow('Total', totalAmount, isTotal: true),
+                ],
+              ),
+            ),
+
+            const SizedBox(height: 16),
             SizedBox(
               width: double.infinity,
               child: OutlinedButton(
@@ -243,7 +264,12 @@ class _RideConfirmationCardState extends State<RideConfirmationCard> {
           onPressed: (){
             Navigator.pushReplacement(
               context,
-              MaterialPageRoute(builder: (_) => const RideCompletionScreen()),
+              MaterialPageRoute(
+                builder: (_) => ReceiptPage(
+                  baseFare: widget.baseFare,
+                  tip: (selectedAmount ?? 0).toDouble(),
+                ),
+              ),
             );
           },
           style: ElevatedButton.styleFrom(
@@ -262,6 +288,31 @@ class _RideConfirmationCardState extends State<RideConfirmationCard> {
 
     );
 
+  }
+
+  Widget _fareRow(String label, double amount, {bool isTotal = false}) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            label,
+            style: TextStyle(
+              fontSize: isTotal ? 15 : 13,
+              fontWeight: isTotal ? FontWeight.bold : FontWeight.w600,
+            ),
+          ),
+          Text(
+            "Rs ${amount.toStringAsFixed(0)}",
+            style: TextStyle(
+              fontSize: isTotal ? 15 : 13,
+              fontWeight: isTotal ? FontWeight.bold : FontWeight.w600,
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   Widget _amountChip(int amount) {
