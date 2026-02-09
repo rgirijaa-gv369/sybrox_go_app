@@ -73,17 +73,30 @@ class LocationService {
 }
 
 class OpenStreetMapService {
-  static Future<List<String>> searchPlace(String query) async {
+  static Future<List<String>> searchPlace(
+    String query, {
+    http.Client? client,
+  }) async {
     final url = Uri.parse(
       "https://nominatim.openstreetmap.org/search?q=$query&format=json&addressdetails=1",
     );
 
-    final response = await http.get(url, headers: {"User-Agent": "cab_app"});
+    final httpClient = client ?? http.Client();
+    try {
+      final response = await httpClient.get(
+        url,
+        headers: {"User-Agent": "cab_app"},
+      );
 
-    if (response.statusCode == 200) {
-      final data = json.decode(response.body);
-      return data.map<String>((e) => e["display_name"].toString()).toList();
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        return data.map<String>((e) => e["display_name"].toString()).toList();
+      }
+      return [];
+    } finally {
+      if (client == null) {
+        httpClient.close();
+      }
     }
-    return [];
   }
 }

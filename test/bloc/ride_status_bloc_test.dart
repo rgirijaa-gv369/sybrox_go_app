@@ -23,31 +23,32 @@ void main() {
       build: () => RideBloc(),
       act: (bloc) => bloc.add(StartRide()),
       expect: () => [
-        const RideState(0),
+        isA<RideState>().having((s) => s.step, 'step', 0),
       ],
     );
 
     blocTest<RideBloc, RideState>(
-      'increments step when _NextStep is triggered',
+      'increments step after timer tick',
       build: () => RideBloc(),
-      seed: () => const RideState(0),
-      act: (bloc) => bloc.add(
-
-        (bloc as dynamic)._NextStep(),
-      ),
+      act: (bloc) => bloc.add(StartRide()),
+      wait: const Duration(seconds: 2),
       expect: () => [
-        const RideState(1),
+        isA<RideState>().having((s) => s.step, 'step', 0),
+        isA<RideState>().having((s) => s.step, 'step', 1),
       ],
     );
 
     blocTest<RideBloc, RideState>(
       'stops incrementing after step 3',
       build: () => RideBloc(),
-      seed: () => const RideState(3),
-      act: (bloc) => bloc.add(
-        (bloc as dynamic)._NextStep(),
-      ),
-      expect: () => [],
+      act: (bloc) => bloc.add(StartRide()),
+      wait: const Duration(seconds: 7),
+      expect: () => [
+        isA<RideState>().having((s) => s.step, 'step', 0),
+        isA<RideState>().having((s) => s.step, 'step', 1),
+        isA<RideState>().having((s) => s.step, 'step', 2),
+        isA<RideState>().having((s) => s.step, 'step', 3),
+      ],
     );
   });
 }

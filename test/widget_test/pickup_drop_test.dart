@@ -6,9 +6,7 @@ import 'package:mocktail/mocktail.dart';
 import 'package:sybrox_go_app/features/auth/presentation/pages/pickup_drop.dart';
 
 
-import 'package:sybrox_go_app/features/ride/presentation/bloc/location/location_bloc.dart';
-import 'package:sybrox_go_app/features/ride/presentation/bloc/location/location_event.dart';
-import 'package:sybrox_go_app/features/ride/presentation/bloc/location/location_state.dart';
+import 'package:sybrox_go_app/features/auth/presentation/bloc/location_bloc.dart';
 
 class MockLocationBloc
     extends MockBloc<LocationEvent, LocationState>
@@ -67,12 +65,20 @@ void main() {
 
   testWidgets('Enables Next button when pickup & drop filled',
           (tester) async {
+        whenListen(
+          mockLocationBloc,
+          Stream<LocationState>.fromIterable([
+            const LocationState(),
+            const LocationState(pickupAddress: 'Current Location'),
+          ]),
+        );
+
         await tester.pumpWidget(createWidget());
+        await tester.pump();
 
         final textFields = find.byType(TextField);
 
         await tester.enterText(textFields.at(1), 'Chennai');
-        await tester.enterText(textFields.at(0), 'Bangalore');
 
         await tester.pump();
 

@@ -6,10 +6,12 @@ import 'package:sybrox_go_app/features/auth/presentation/bloc/otp_event.dart';
 import 'package:sybrox_go_app/features/auth/presentation/bloc/otp_state.dart';
 
 void main() {
+  final repo = _FakeOtpRepository();
+
   group('OtpBloc', () {
     blocTest<OtpBloc, OtpState>(
       'emits [OtpLoading, OtpVerified] when OTP is correct',
-      build: () => OtpBloc(OtpRepository()),
+      build: () => OtpBloc(repo),
       act: (bloc) => bloc.add(VerifyOtp('1234')),
       expect: () => [
         OtpLoading(),
@@ -19,7 +21,7 @@ void main() {
 
     blocTest<OtpBloc, OtpState>(
       'emits [OtpLoading, OtpError] when OTP is wrong',
-      build: () => OtpBloc(OtpRepository()),
+      build: () => OtpBloc(repo),
       act: (bloc) => bloc.add(VerifyOtp('0000')),
       expect: () => [
         OtpLoading(),
@@ -27,4 +29,12 @@ void main() {
       ],
     );
   });
+}
+
+class _FakeOtpRepository extends OtpRepository {
+  @override
+  Future<void> sendOtp(String phone) async {}
+
+  @override
+  Future<bool> verifyOtp(String otp) async => otp.trim() == '1234';
 }
