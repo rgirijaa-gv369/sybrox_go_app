@@ -5,11 +5,13 @@ import 'package:mocktail/mocktail.dart';
 import 'package:geolocator_platform_interface/geolocator_platform_interface.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
+import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 
 import 'package:sybrox_go_app/core/utils/location_service.dart';
 
 
 class MockGeolocatorPlatform extends Mock
+    with MockPlatformInterfaceMixin
     implements GeolocatorPlatform {}
 
 class MockHttpClient extends Mock implements http.Client {}
@@ -18,10 +20,15 @@ void main() {
   late MockGeolocatorPlatform geolocator;
   late MockHttpClient httpClient;
 
+  setUpAll(() {
+    registerFallbackValue(Uri.parse('http://localhost'));
+    registerFallbackValue(<String, String>{});
+    registerFallbackValue(LocationAccuracy.best);
+    registerFallbackValue(const Duration(seconds: 1));
+  });
+
   setUp(() {
     geolocator = MockGeolocatorPlatform();
-    GeolocatorPlatform.instance = geolocator;
-
     httpClient = MockHttpClient();
   });
 
@@ -52,6 +59,8 @@ void main() {
 
   group('LocationService.getCurrentLocation', () {
     test('returns position when permission granted', () async {
+      GeolocatorPlatform.instance = geolocator;
+
       when(() => geolocator.isLocationServiceEnabled())
           .thenAnswer((_) async => true);
 
@@ -59,6 +68,7 @@ void main() {
           .thenAnswer((_) async => LocationPermission.always);
 
       when(() => geolocator.getCurrentPosition(
+        locationSettings: any(named: 'locationSettings'),
       )).thenAnswer(
             (_) async => Position(
           latitude: 13,
@@ -82,6 +92,8 @@ void main() {
     });
 
     test('throws exception when service disabled', () async {
+      GeolocatorPlatform.instance = geolocator;
+
       when(() => geolocator.isLocationServiceEnabled())
           .thenAnswer((_) async => false);
 
@@ -106,7 +118,10 @@ void main() {
             (_) async => http.Response(jsonEncode(responseData), 200),
       );
 
-      final results = await OpenStreetMapService.searchPlace('Chennai');
+      final results = await OpenStreetMapService.searchPlace(
+        'Chennai',
+        client: httpClient,
+      );
 
       expect(results.length, 2);
       expect(results.first, contains('Chennai'));
@@ -118,7 +133,10 @@ void main() {
             (_) async => http.Response('Error', 500),
       );
 
-      final results = await OpenStreetMapService.searchPlace('Invalid');
+      final results = await OpenStreetMapService.searchPlace(
+        'Invalid',
+        client: httpClient,
+      );
 
       expect(results, isEmpty);
     });

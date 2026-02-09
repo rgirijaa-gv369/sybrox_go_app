@@ -183,12 +183,10 @@ class _RideMapScreenState extends State<RideMapScreen> {
           ),
 
           if (currentStep == RideStep.selectRide)
-            Align(
-              alignment: Alignment.centerLeft,
-              child: Positioned(
-                bottom: 200,
-                child: _goCoinsToggle(),
-              ),
+            Positioned(
+              left: 16,
+              bottom: 200,
+              child: _goCoinsToggle(),
             ),
           Align(
             alignment: Alignment.bottomCenter,
